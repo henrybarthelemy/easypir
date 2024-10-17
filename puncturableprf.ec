@@ -1,5 +1,7 @@
 require import AllCore Distr FSet.
 
+require (*--*) PRF.
+
 (* Puncturable PRF but not a private one, we don't attempt to hide x, just f(x) *)
 (* Written by Henry Barthelemy *)
 type K.
@@ -50,6 +52,8 @@ module PuncturablePrfCorrectnessGame = {
   }
 }.
 
+    (* PPRF is correct if for key k, puncture point x' with resulting punctured key pk,
+    PPRF.f(x, k) = PPRF.f(x, pk) for all points where x' <> x *)
 lemma pprf_correctness &m xp1 xi1 : xp1 <> xi1 =>
     Pr [PuncturablePrfCorrectnessGame.f(xp1, xi1) @ &m : res = true] = 1%r.
 proof.
@@ -58,12 +62,31 @@ byphoare (_: xi <> xp ==> res = true) => // {&m}.
 conseq (: _ ==> true) (: _ ==> res = true) => //.
 proc; inline; wp; simplify.
 rnd. skip. move => &hr xi_noteq_xp k _.
-  have neq2 : (xi{hr} = xp{hr}) = false by smt().
+  have xi_neq_xp : (xi{hr} = xp{hr}) = false by smt().
   have simplified_if: (if xp{hr} = xi{hr} then None else Some (F k xi{hr})) = Some (F k xi{hr}) by smt().
   rewrite simplified_if; simplify; trivial.
   proc; inline; wp; simplify; rnd; skip. move => &hr H; simplify; smt(dK_ll).
   smt().
 qed.
+
+    (* TODO: pprf indistinguishability *)
+
+
+clone import PRF as PRFa
+with type D <- D,
+type R <- R.
+   
+    (*
+module IND_PRF = PRFa.IND.
+module PRFi = PRF_RF.RF.
+(* Adv^PRG_PRGc(D) is defined as
+     Pr[IND_PRG(PRGc,D).main() @ &m: res]
+  - Pr[IND_PRG(PRGi,D).main() @ &m: res] *)
+
+
+*)
+    (* TODO: pprf unpredictability *)
+
 
 
 
