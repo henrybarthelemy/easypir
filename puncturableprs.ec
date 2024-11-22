@@ -4,6 +4,7 @@ require import AllCore Distr FSet List.
 require (*--*) Puncturableprf.
 
 
+
 (* Size of database *)
 op S : int -> int. (* SN defined to be s(n) = sqrt(n) / 2 *)
 op sqrt : int -> int.
@@ -28,9 +29,7 @@ module PPRFm = PPRF.PuncturablePsuedoRF.
 op consIfSome (x: int option) (ls: int list) =
     with x = Some y => y :: ls
     with  x = None => ls.
-
-lemma cons_with_none (ls : int list) : (consIfSome None ls = ls) by smt().
-    
+ 
 module PuncturablePRS = {
   proc gen(n : int): SK = {
     var k;
